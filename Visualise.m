@@ -209,18 +209,27 @@ min_c=-max_; max_c=max_; %This needs to be THE maximum value across all datasets
 %Count of shades of colour in contour plots:
 conts_=500;
 
+%Load colour scheme:
+load('parula_alt.mat')
+%(This is a customised version of the parula colour scheme, intended to
+%better display near-zero changes. The parula colour scheme itself should
+%ensure good display even when printed in black and white.)
+
 %Vertical Plot:
-fig_vertical=figure(1);
+fig_vertical=figure();
 axes_1 = axes('Parent',fig_vertical);
 set(fig_vertical, 'Position', [400 500 280 280]);
 set(axes_1, 'Position', [0.18 0.18 0.77 0.77]);
 hold on;
 box on;
 
-contourf(r_vals_F,z_vals_F,v_gridF_xz,conts_),shading flat;
+[~,h] = contourf(r_vals_F,z_vals_F,v_gridF_xz,conts_);
+set(h,'LineColor','none');
+colormap(map);
 quiver(r_vals_C,z_vals_C,u_gridC_xz,w_gridC_xz,'black');
-xlabel('Radius'); xlim manual;
-ylabel('Height'); ylim manual;
+x_label = xlabel('Radius'); xlim manual;
+y_label = ylabel('Height'); ylim manual;
+set(y_label,'position',[0,0,1]);
 caxis([min_c max_c])
 vh_='v';
 
@@ -228,14 +237,16 @@ vh_='v';
 saveas(fig_vertical,['eta_' strrep(num2str(eta_),'.','') '_mu_' strrep(num2str(mu_),'.','') '_N_' strrep(num2str(N_),'.','') '_' vh_ '.fig']);
 
 %Horizontal:
-fig_horizontal=figure(2);
+fig_horizontal=figure();
 axes_2 = axes('Parent',fig_horizontal);
 set(fig_horizontal, 'Position', [800 500 372 280]);
 set(axes_2, 'Position', [0.18 0.18 0.77 0.77]);
 hold on;
 box on;
 
-contourf(r_vals_F,theta_vals_F,w_gridF_xt,conts_),shading flat;
+[~,h] = contourf(r_vals_F,theta_vals_F,w_gridF_xt,conts_);
+set(h,'LineColor','none');
+colormap(map);
 quiver(r_vals_C,theta_vals_C,u_gridC_xt,v_ang_grid_xt,'black');
 xlabel('Radius'); xlim manual;
 ylabel('\theta','Rotation',0); ylim manual;
