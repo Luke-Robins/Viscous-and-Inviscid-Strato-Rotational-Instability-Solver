@@ -87,6 +87,8 @@ w_eval=@(x_,theta_,z_) real(exp(1i*(m_*theta_+k_*z_))*ChebEval(w_k,1-2*x_));
 %   ["3 (perturbations)" times "2 (coarse and fine)" times "2 (xt and xz)"]
 
 %Define minimum and maximum of each dimension:
+r_min=eta_/(1-eta_);
+r_max=   1/(1-eta_);
 x_min=0; %r = eta_/(1-eta_)
 x_max=1; %r =    1/(1-eta_)
 if m_==0
@@ -184,21 +186,6 @@ end
 r_vals_F=(eta_/(1-eta_))+x_vals_F;
 r_vals_C=(eta_/(1-eta_))+x_vals_C;
 
-%We need the angular velocity in the x-t plane in order to be consistent
-%with the theta-axis.
-v_ang_grid_xt_F=v_gridF_xt;
-v_ang_grid_xt=v_gridC_xt;
- for i_=1:x_LC
-    for j_=1:t_LC
-        v_ang_grid_xt(i_,j_)=v_gridC_xt(i_,j_)/r_vals_C(i_);
-    end
-end
-for i_=1:x_LF
-    for j_=1:t_LF
-        v_ang_grid_xt_F(i_,j_)=v_gridF_xt(i_,j_)/r_vals_F(i_); 
-    end
-end
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Function Grids Calculated
 
@@ -227,8 +214,8 @@ box on;
 set(h,'LineColor','none');
 colormap(map);
 quiver(r_vals_C,z_vals_C,u_gridC_xz,w_gridC_xz,'black');
-x_label = xlabel('Radius'); xlim manual;
-y_label = ylabel('Height'); ylim manual;
+x_label = xlabel('Radius'); xlim([r_min r_max]);
+y_label = ylabel('Height'); ylim([z_min z_max]);
 set(y_label,'position',[0,0,1]);
 caxis([min_c max_c])
 vh_='v';
@@ -247,9 +234,9 @@ box on;
 [~,h] = contourf(r_vals_F,theta_vals_F,w_gridF_xt,conts_);
 set(h,'LineColor','none');
 colormap(map);
-quiver(r_vals_C,theta_vals_C,u_gridC_xt,v_ang_grid_xt,'black');
-xlabel('Radius'); xlim manual;
-ylabel('\theta','Rotation',0); ylim manual;
+quiver(r_vals_C,theta_vals_C,u_gridC_xt,v_gridC_xt,'black');
+xlabel('Radius'); xlim([r_min r_max]);
+ylabel('\theta','Rotation',0); ylim([theta_min theta_max]);
 caxis([min_c max_c])
 colorbar;
 vh_='h';
